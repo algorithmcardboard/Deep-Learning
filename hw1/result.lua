@@ -5,4 +5,3 @@ require 'nn'      -- provides a normalization operator
 model_path = "."
 test_path = "."
 
-

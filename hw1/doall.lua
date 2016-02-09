@@ -73,11 +73,15 @@ dofile '5_test.lua'
 print '==> training!'
 
 use_lbfgs = false
+iter = iter or 1
 while true do
-  iter = iter or 1
   if iter > 5 then
     use_lbfgs = true
   end
+  print("Use lbfgs is " .. tostring(use_lbfgs) .. " Iteration " .. iter)
+
   train(use_lbfgs)
   test()
+
+  iter = iter + 1
 end

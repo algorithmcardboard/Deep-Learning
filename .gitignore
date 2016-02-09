@@ -60,3 +60,11 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+
+mnist.t7
+mnist.t7.tgz
+hw1/results
+
+*.swp
+*.swo
