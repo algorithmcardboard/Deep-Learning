@@ -149,7 +149,7 @@ function train(use_lbfgs)
          elseif opt.type == 'cuda' then input = input:cuda() end
 
          -- Rotate randomly to introduce more viriety in the dataset:
-         theta = torch.normal(0,0.131)
+         theta = torch.normal(0,0.349)
          input = image.rotate(input,theta)
 
          table.insert(inputs, input)

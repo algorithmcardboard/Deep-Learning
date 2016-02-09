@@ -68,3 +68,5 @@ hw1/results
 
 *.swp
 *.swo
+
+hw1/doall.o*
