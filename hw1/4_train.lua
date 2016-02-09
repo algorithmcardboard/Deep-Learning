@@ -147,6 +147,11 @@ function train(use_lbfgs)
          local target = trainData.labels[shuffle[i]]
          if opt.type == 'double' then input = input:double()
          elseif opt.type == 'cuda' then input = input:cuda() end
+
+         -- Rotate randomly to introduce more viriety in the dataset:
+         theta = torch.normal(0,0.131)
+         input = image.rotate(input,theta)
+
          table.insert(inputs, input)
          table.insert(targets, target)
       end
