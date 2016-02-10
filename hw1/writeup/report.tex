@@ -1,13 +1,14 @@
 \documentclass{article}
 
 \usepackage{lmodern}
+\usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[T1]{fontenc}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\lhead{Anirudhan J Rajagopalan - ajr619}
-\lhead{Michele Ceru - mc3784}
+\lhead{Anirudhan J Rajagopalan --- ajr619}
+\lhead{Michele Ceru --- mc3784}
 
 \begin{document}
 
@@ -19,7 +20,16 @@
 
 \newpage
 
-\section{Backpropogation}
-\section{Torch (MNIST handwriting recognition)}
+\section[Expression for energy]{Backpropogation}
 
+\section[Kaggle contest]{Torch (MNIST handwriting recognition)}
+
+\subsubsection{Model file}
+  The model file can be found at \href{http://cs.nyu.edu/~ajr619/model.net}{http://cs.nyu.edu/~ajr619/model.net}
+\subsubsection{Github repo}
+  The repository for the changes and result.lua is at \\
+  \href{https://github.com/rajegannathan/Deep-Learning/tree/master/hw1}{https://github.com/rajegannathan/Deep-Learning/tree/master/hw1}
+\subsubsection{Best performing model}
+  We got a best test set performance of 99.57\% for a slightly modified convolutional net wherein we rotate the image by angles produced by normal distribution with 0 mean and 0.131 deviation.  The randomly generated values are taken as the radians by which the image should be rotated.
+\subsubsection{Experiments}
 \end{document}
