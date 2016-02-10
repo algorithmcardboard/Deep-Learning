@@ -3,7 +3,7 @@ require 'image'   -- for color transforms
 require 'nn'      -- provides a normalization operator
 require 'optim'   -- an optimization package, for online and batch methods
 
-model_path = "results/model.net.39"
+model_path = "results/model.net.5"
 
 model = torch.load(model_path)
 
@@ -16,6 +16,7 @@ if not paths.filep(train_file) or not paths.filep(test_file) then
    os.execute('wget ' .. tar)
    os.execute('tar xvf ' .. paths.basename(tar))
 end
+
 
 trsize = 60000
 tesize = 10000
@@ -67,17 +68,44 @@ opt = cmd:parse(arg or {})
 classes = {'1','2','3','4','5','6','7','8','9','0'}
 confusion = optim.ConfusionMatrix(classes)
 
-dofile '5_test.lua'
+error_count = 0
 
-_prediction = torch.FloatTensor()
-_max = torch.FloatTensor()
-_pred_idx = torch.LongTensor()
-_targ_idx = torch.LongTensor()
+f = io.open('predictions.csv', 'w')
+f:write("Id,Prediction" .. "\n")
 
-_prediction:resize(pred:size()):copy(pred)
+-- dofile '5_test.lua'
+for t = 1,testData:size() do
+  -- disp progress
+  xlua.progress(t, testData:size())
 
-_max:max(self._pred_idx, self._prediction, 1)
+  -- get new sample
+  local input = testData.data[t]
+  input = input:double()
 
-observed_class = _pred_idx[1]
+  local target = testData.labels[t]
 
-test()
+  -- test sample
+  local pred = model:forward(input)
+  _prediction = torch.FloatTensor()
+  _max = torch.FloatTensor()
+  _pred_idx = torch.LongTensor()
+  _targ_idx = torch.LongTensor()
+
+  _prediction:resize(pred:size()):copy(pred)
+
+  _max:max(_pred_idx, _prediction, 1)
+
+  observed_class = _pred_idx[1]
+
+  if (observed_class ~= target) then
+    error_count = error_count + 1
+  end
+
+  confusion:add(pred, target)
+  print ("Observed " .. observed_class .. " Target " .. target)
+  f:write(tostring(t).. "," .. tostring(observed_class) .. '\n')
+end
+
+f.close()
+
+print("total accuraccy is " .. ( 1 - error_count/testData:size()))
