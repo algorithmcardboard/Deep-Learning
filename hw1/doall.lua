@@ -29,7 +29,7 @@ cmd:text('Options:')
 cmd:option('-seed', 1, 'fixed input seed for repeatable experiments')
 cmd:option('-threads', 2, 'number of threads')
 -- data:
-cmd:option('-size', 'small', 'how many samples do we load: small | full')
+cmd:option('-size', 'full', 'how many samples do we load: small | full')
 -- model:
 cmd:option('-model', 'convnet', 'type of model to construct: linear | mlp | convnet')
 -- loss:
@@ -72,16 +72,7 @@ dofile '5_test.lua'
 ----------------------------------------------------------------------
 print '==> training!'
 
-use_lbfgs = false
-iter = iter or 1
 while true do
-  if iter > 5 then
-    use_lbfgs = true
-  end
-  print("Use lbfgs is " .. tostring(use_lbfgs) .. " Iteration " .. iter)
-
   train(use_lbfgs)
   test()
-
-  iter = iter + 1
 end

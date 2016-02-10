@@ -107,17 +107,7 @@ end
 ----------------------------------------------------------------------
 print '==> defining training procedure'
 
-function train(use_lbfgs)
-
-   if use_lbfgs then
-     optimState = {
-        learningRate = opt.learningRate,
-        maxIter = opt.maxIter,
-        nCorrection = 10
-     }
-     optimMethod = optim.lbfgs
-   end
-
+function train()
 
    -- epoch tracker
    epoch = epoch or 1

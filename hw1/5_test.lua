@@ -40,6 +40,7 @@ function test()
 
       -- test sample
       local pred = model:forward(input)
+
       confusion:add(pred, target)
    end
 
