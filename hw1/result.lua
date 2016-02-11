@@ -3,7 +3,7 @@ require 'image'   -- for color transforms
 require 'nn'      -- provides a normalization operator
 require 'optim'   -- an optimization package, for online and batch methods
 
-model_path = "results/model.net.60"
+model_path = "results/model.net.102"
 
 model = torch.load(model_path)
 
