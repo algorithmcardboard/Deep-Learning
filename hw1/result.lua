@@ -3,7 +3,7 @@ require 'image'   -- for color transforms
 require 'nn'      -- provides a normalization operator
 require 'optim'   -- an optimization package, for online and batch methods
 
-model_path = "results/model.net.5"
+model_path = "results/model.net.60"
 
 model = torch.load(model_path)
 
@@ -17,12 +17,11 @@ if not paths.filep(train_file) or not paths.filep(test_file) then
    os.execute('tar xvf ' .. paths.basename(tar))
 end
 
+trsize = 6000
+tesize = 1000
 
 trsize = 60000
 tesize = 10000
-
-trsize = 6000
-tesize = 1000
 
 loaded = torch.load(train_file, 'ascii')
 trainData = {
