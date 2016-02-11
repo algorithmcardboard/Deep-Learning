@@ -1,0 +1,36 @@
+[I 23:12:42.985 NotebookApp] Serving notebooks from local directory: /home/anirudhan/workspace/Deep-Learning/hw1/writeup
+[I 23:12:42.985 NotebookApp] 0 active kernels 
+[I 23:12:42.985 NotebookApp] The IPython Notebook is running at: https://[all ip addresses on your system]:8888/
+[I 23:12:42.985 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[W 23:12:43.199 NotebookApp] 404 GET /api/kernels/ed86151c-386f-47ab-93f7-878b2797ae2a/channels?session_id=72220E8E5BE543D98412124727302160 (192.168.203.1): Kernel does not exist: ed86151c-386f-47ab-93f7-878b2797ae2a
+[W 23:12:43.227 NotebookApp] 404 GET /api/kernels/ed86151c-386f-47ab-93f7-878b2797ae2a/channels?session_id=72220E8E5BE543D98412124727302160 (192.168.203.1) 35.28ms referer=None
+[I 23:12:57.745 NotebookApp] Creating new notebook in 
+[I 23:12:58.949 NotebookApp] Kernel started: 48b45d7d-4ac1-4f48-a044-e913b0fd1a4c
+[C 23:13:34.410 NotebookApp] received signal 15, stopping
+[I 23:13:34.411 NotebookApp] Shutting down kernels
+[I 23:13:34.816 NotebookApp] Kernel shutdown: 48b45d7d-4ac1-4f48-a044-e913b0fd1a4c
+[I 23:14:12.471 NotebookApp] Serving notebooks from local directory: /home/anirudhan/workspace/Deep-Learning/hw1/writeup
+[I 23:14:12.471 NotebookApp] 0 active kernels 
+[I 23:14:12.471 NotebookApp] The IPython Notebook is running at: https://[all ip addresses on your system]:8888/
+[I 23:14:12.471 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[W 23:14:14.088 NotebookApp] 404 GET /api/kernels/48b45d7d-4ac1-4f48-a044-e913b0fd1a4c/channels?session_id=EAE20B1431454B7B95A86DC9625E5074 (192.168.203.1): Kernel does not exist: 48b45d7d-4ac1-4f48-a044-e913b0fd1a4c
+[W 23:14:14.105 NotebookApp] 404 GET /api/kernels/48b45d7d-4ac1-4f48-a044-e913b0fd1a4c/channels?session_id=EAE20B1431454B7B95A86DC9625E5074 (192.168.203.1) 19.27ms referer=None
+[I 23:14:19.320 NotebookApp] Saving file at /Plots.ipynb
+[I 23:14:20.073 NotebookApp] Kernel started: 21fa6041-235b-4be6-8b18-b7e083c3c39f
+[I 23:16:20.068 NotebookApp] Saving file at /Plots.ipynb
+[I 23:18:20.052 NotebookApp] Saving file at /Plots.ipynb
+[I 23:20:20.054 NotebookApp] Saving file at /Plots.ipynb
+[I 23:28:20.078 NotebookApp] Saving file at /Plots.ipynb
+[I 23:30:20.063 NotebookApp] Saving file at /Plots.ipynb
+[I 23:32:20.042 NotebookApp] Saving file at /Plots.ipynb
+[I 23:42:20.068 NotebookApp] Saving file at /Plots.ipynb
+[I 23:44:20.066 NotebookApp] Saving file at /Plots.ipynb
+[I 23:46:20.066 NotebookApp] Saving file at /Plots.ipynb
+[I 23:50:20.048 NotebookApp] Saving file at /Plots.ipynb
+WARNING: Attempting to work in a virtualenv. If you encounter problems, please install IPython inside the virtualenv.
+[IPKernelApp] WARNING | No such comm: 2c57d75179974364ba6a63ff62f43f92
+[IPKernelApp] WARNING | No such comm: ef97b775f0db4385a3fa499062c6006d
+[IPKernelApp] WARNING | No such comm: b02f0d9422dd4c9ab2b0b50259a854a9
+[IPKernelApp] WARNING | No such comm: 1622fb1e4e2440bcbddbfdf1a3a62078
+[I 23:52:20.080 NotebookApp] Saving file at /Plots.ipynb
+[I 23:52:29.109 NotebookApp] Saving file at /Plots.ipynb

@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage[T1]{fontenc}
 \usepackage{fancyhdr}
+\usepackage{color,graphicx}
 \pagestyle{fancy}
 \lhead{Anirudhan J Rajagopalan --- ajr619}
 \lhead{Michele Ceru --- mc3784}
@@ -86,6 +87,17 @@ Writing the solution all together:
   The repository for the changes and result.lua is at \\
   \href{https://github.com/rajegannathan/Deep-Learning/tree/master/hw1}{https://github.com/rajegannathan/Deep-Learning/tree/master/hw1}
 \subsubsection{Best performing model}
-  We got a best test set performance of 99.57\% for a slightly modified convolutional net wherein we rotate the image by angles produced by normal distribution with 0 mean and 0.131 deviation.  The randomly generated values are taken as the radians by which the image should be rotated.
+  We got a best test set performance of 99.57\% for a slightly modified convolutional net wherein we rotate the image by angles produced by normal distribution with 0 mean and 0.2 deviation.  The randomly generated values are taken as the radians by which the image should be rotated.
 \subsubsection{Experiments}
+\subsubsection{Figures}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{bestPerformance}
+  \caption{Sample Data format.  The columns correspond to id,  Fp1, Fp2, F7, F3, Fz, F4, F8, FC5, FC1, FC2, FC6, T7, C3, Cz, C4, T8, TP9, CP5, CP1, CP2, CP6, TP10, P7, P3, Pz, P4, P8, PO9, O1, Oz, O2, PO10.\label{fig:Sample_data}}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\textwidth]{convolution_dropout}
+  \caption{Sample Data format.  The columns correspond to id,  Fp1, Fp2, F7, F3, Fz, F4, F8, FC5, FC1, FC2, FC6, T7, C3, Cz, C4, T8, TP9, CP5, CP1, CP2, CP6, TP10, P7, P3, Pz, P4, P8, PO9, O1, Oz, O2, PO10.\label{fig:Sample_data}}
+\end{figure}
 \end{document}
