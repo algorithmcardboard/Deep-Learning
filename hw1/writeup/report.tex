@@ -89,15 +89,23 @@ Writing the solution all together:
 \subsubsection{Best performing model}
   We got a best test set performance of 99.57\% for a slightly modified convolutional net wherein we rotate the image by angles produced by normal distribution with 0 mean and 0.2 deviation.  The randomly generated values are taken as the radians by which the image should be rotated.
 \subsubsection{Experiments}
+  We ran a number of experiments starting with tweakign the options being passed to the test, train and model lua scripts.
+\begin{description}
+  \item[SGD Batch size:] Changing the batch size of SGD decreases the performance drastically.  For batch size of 32, 64 and 128 the model's accuracy was in the range of 78\%, 60\% and  45\% respectively.
+  \item[Momentum and Learning rate:] Theoretically, using a value of momentum greater than zero (and lesser than one) should help us jump over local minimum.  When combined with proper value of learning rate we should be able to find a non local minimum.  But from our experiments, we were unable to find a good combination of learning rate and momentum that gives a better performance than the default momentum of zero and learning rate of $10^{-3} $.  The performance drop was considerable and we were able to achieve accuracy in the range of around ~30\% only.
+  \item[Optimization algorithm] Another theoritical point which we considered was to use SGD in the starting few epoches and then switch the optimization algorithm to something better such as BFGS.  Theoretically, SGD is supposed to help us skip saddle points and once we are near a minima, the other optimization algorithm could help us converge faster.  So we tried experimenting by changing the optimization algorithm after epochs 5, 7, 15 and 30.  We were able to get performance on par with the default SGD implementation (99.2\% accuracy) and we didn't observe any improvements in performance.
+
+    We also tried with other optimization routines such as ASGD and CG.  But the script was giving a number of exceptions and we didn't explore it further due to time constraints.
+\end{description}
 \subsubsection{Figures}
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\textwidth]{bestPerformance}
-  \caption{Sample Data format.  The columns correspond to id,  Fp1, Fp2, F7, F3, Fz, F4, F8, FC5, FC1, FC2, FC6, T7, C3, Cz, C4, T8, TP9, CP5, CP1, CP2, CP6, TP10, P7, P3, Pz, P4, P8, PO9, O1, Oz, O2, PO10.\label{fig:Sample_data}}
+  \includegraphics[width=0.65\textwidth]{bestPerformance}
+  \caption{Best performance figures. We added a layer that rotates the images by random angles drawn from a normal distribution with zero mean and 0.2 standard deviation. \label{fig:best_performance}}
 \end{figure}
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\textwidth]{convolution_dropout}
-  \caption{Sample Data format.  The columns correspond to id,  Fp1, Fp2, F7, F3, Fz, F4, F8, FC5, FC1, FC2, FC6, T7, C3, Cz, C4, T8, TP9, CP5, CP1, CP2, CP6, TP10, P7, P3, Pz, P4, P8, PO9, O1, Oz, O2, PO10.\label{fig:Sample_data}}
+  \includegraphics[width=0.65\textwidth]{convolution_dropout}
+  \caption{Adding convolutional layers and dropout model for the best performing model. \label{fig:convolution_dropout}}
 \end{figure}
 \end{document}
