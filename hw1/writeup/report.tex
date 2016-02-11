@@ -94,6 +94,15 @@ Writing the solution all together:
   \item[SGD Batch size:] Changing the batch size of SGD decreases the performance drastically.  For batch size of 32, 64 and 128 the model's accuracy was in the range of 78\%, 60\% and  45\% respectively.
   \item[Momentum and Learning rate:] Theoretically, using a value of momentum greater than zero (and lesser than one) should help us jump over local minimum.  When combined with proper value of learning rate we should be able to find a non local minimum.  But from our experiments, we were unable to find a good combination of learning rate and momentum that gives a better performance than the default momentum of zero and learning rate of $10^{-3} $.  The performance drop was considerable and we were able to achieve accuracy in the range of around ~30\% only.
   \item[Optimization algorithm] Another theoritical point which we considered was to use SGD in the starting few epoches and then switch the optimization algorithm to something better such as BFGS.  Theoretically, SGD is supposed to help us skip saddle points and once we are near a minima, the other optimization algorithm could help us converge faster.  So we tried experimenting by changing the optimization algorithm after epochs 5, 7, 15 and 30.  We were able to get performance on par with the default SGD implementation (99.2\% accuracy) and we didn't observe any improvements in performance.
+  
+  
+\item[Data Augmentation]  To generate more training examples we rotated the training data of random angle. The chosen criteria to rotate the image is a normal distribution with zero mean and $\theta$ standard deviation. During the training we rotated al the images randomly using this normal distribution. We run experiment with different values of \theta$, noticing that the performance improve for values smaller than  $20$ degree. In particular we found our best performance for $\theta=0.2$, that is around $11.46$ degree.
+
+\item[Introduction of noise] In order to reduce overfitting we introduced a random gaussian noise in the training images. Doing so, we obtained an overall worse performance during the training phase and a comparable performance during the testing phase, reducing in such way the gap of the performance between training and testing .
+
+\item[Additional Convolutional layer] We added an additional spatial convolutional layer, but we didn't notice any considerable improvement.
+
+\item[Drop out] Added a drop out layer    
 
     We also tried with other optimization routines such as ASGD and CG.  But the script was giving a number of exceptions and we didn't explore it further due to time constraints.
 \end{description}
