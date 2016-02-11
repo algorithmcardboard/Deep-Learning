@@ -21,6 +21,62 @@
 \newpage
 
 \section[Expression for energy]{Backpropogation}
+\begin{enumerate}
+\item Using the chain rule:
+$$
+\frac{\partial E}{\partial x_{\text{in}}} = \frac{\partial E}{\partial x_{\text{out}}}\frac{\partial x_{\text{out}}}{\partial x_{\text{in}}}
+$$  
+Using the expression of $x_{\text{out}}$ given in the question we have:
+$$
+\frac{\partial x_{\text{out}}}{\partial x_{\text{in}}} = \frac{\partial }{\partial x_{\text{in}}} \big(\frac{1}{1+e^{-x_{\text{in}}}}\big) = \frac{e^{-x_{\text{in}}} }{(1+e^{-x_{\text{in}}})^2}
+$$
+Summing and subtracting $1$ in the numerator:
+$$
+\frac{\partial x_{\text{out}}}{\partial x_{\text{in}}}  = \frac{1+e^{-x_{\text{in}}} -1}{(1+e^{-x_{\text{in}}})^2}=\frac{1}{1-e^{-x_{\text{in}}}}\Big[  1-\frac{1}{1-e^{-x_{\text{in}}}}\Big]
+$$
+And using the expression of $x_{\text{out}}$ given in the question:
+$$
+\frac{\partial E}{\partial x_{\text{in}}} =\frac{\partial E}{\partial x_{\text{out}}}x_{\text{out}}[1-x_{\text{out}}]
+$$
+
+\item Using the expression of $x_{\text{out}}$ given in the question:
+$$
+\frac{\partial (x_{\text{out}})_i}{\partial (x_{\text{in}})_j} = \frac{\partial }{\partial (x_{\text{in}})_j} \Big(  
+\frac{e^{-\beta (x_{\text{in}})_i}}{\sum_k e^{-\beta (x_{\text{in}})_k}}
+\Big)
+$$
+In the case $i=j$:
+$$
+\frac{\partial (x_{\text{out}})_i}{\partial (x_{\text{in}})_i} =    
+\frac{-\beta e^{-\beta (x_{\text{in}})_i} (\sum_k e^{-\beta (x_{\text{in}})_k} )- e^{-\beta (x_{\text{in}})_i} (-\beta e^{-\beta (x_{\text{in}})_i}   )
+}
+{\sum_k e^{-\beta (x_{\text{in}})_k}}=
+$$
+
+$$
+=-\frac{\beta e^{-\beta (x_{\text{in}})_i}}{\sum_k e^{-\beta (x_{\text{in}})_k} } \Big[  1-\frac{\beta e^{-\beta (x_{\text{in}})_i}}{\sum_k e^{-\beta (x_{\text{in}})_k} }\Big]
+$$and substituting the expression of $x_{\text{out}}$:
+$$
+\frac{\partial (x_{\text{out}})_i}{\partial (x_{\text{in}})_i} =\beta  (x_{\text{out}})_i [1- (x_{\text{out}})_i]
+$$
+In the case $i\neq j$:
+$$
+\frac{\partial (x_{\text{out}})_i}{\partial (x_{\text{in}})_j} =    
+-\beta e^{-\beta (x_{\text{in}})_j} (\sum_k e^{-\beta (x_{\text{in}})_k} )^{-2} e^{-\beta (x_{\text{in}})_i} =
+$$ 
+$$
+=\beta \frac{e^{-\beta (x_{\text{in}})_j}}{\sum_k e^{-\beta (x_{\text{in}})_k} }
+\frac{e^{-\beta (x_{\text{in}})_i}}{\sum_k e^{-\beta (x_{\text{in}})_k} } =\beta (x_{\text{out}})_j(x_{\text{out}})_i 
+$$
+Writing the solution all together:
+\begin{equation*}
+      \frac{\partial (x_{\text{out}})_i}{\partial (x_{\text{in}})_j} = \begin{cases}
+                       \beta  (x_{\text{out}})_i [1- (x_{\text{out}})_i]   \text{\,	if  $i= j$}\\
+                        \beta (x_{\text{out}})_j(x_{\text{out}})_i   \text{\,	if  $i\neq j$}
+                    \end{cases}
+\end{equation*}
+
+\end{enumerate}
 
 \section[Kaggle contest]{Torch (MNIST handwriting recognition)}
 
