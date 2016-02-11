@@ -34,3 +34,13 @@ WARNING: Attempting to work in a virtualenv. If you encounter problems, please i
 [IPKernelApp] WARNING | No such comm: 1622fb1e4e2440bcbddbfdf1a3a62078
 [I 23:52:20.080 NotebookApp] Saving file at /Plots.ipynb
 [I 23:52:29.109 NotebookApp] Saving file at /Plots.ipynb
+[I 16:04:26.487 NotebookApp] The port 8888 is already in use, trying another random port.
+[I 16:04:26.490 NotebookApp] Serving notebooks from local directory: /home/anirudhan/workspace/Deep-Learning/hw1/writeup
+[I 16:04:26.490 NotebookApp] 0 active kernels 
+[I 16:04:26.490 NotebookApp] The IPython Notebook is running at: https://[all ip addresses on your system]:8889/
+[I 16:04:26.490 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 16:06:35.924 NotebookApp] Saving file at /Plots.ipynb
+[I 16:10:35.946 NotebookApp] Saving file at /Plots.ipynb
+[I 16:10:56.326 NotebookApp] Kernel shutdown: 21fa6041-235b-4be6-8b18-b7e083c3c39f
+[C 16:11:09.251 NotebookApp] received signal 15, stopping
+[I 16:11:09.252 NotebookApp] Shutting down kernels

@@ -8,14 +8,14 @@
 \usepackage{fancyhdr}
 \usepackage{color,graphicx}
 \pagestyle{fancy}
-\lhead{Anirudhan J Rajagopalan --- ajr619}
+\lhead{Anirudhan J. Rajagopalan --- ajr619}
 \lhead{Michele Ceru --- mc3784}
 
 \begin{document}
 
 \title{Deep Learning --- Homework 1}
 \date{February 11, 2016}
-\author{Anirudhan J Rajagopalan, Michele Ceru\\ ajr619, mc3784}
+\author{Anirudhan J. Rajagopalan, Michele Ceru\\ ajr619, mc3784}
 
 \maketitle
 
@@ -82,35 +82,44 @@ Writing the solution all together:
 \section[Kaggle contest]{Torch (MNIST handwriting recognition)}
 
 \subsubsection{Model file}
-  The model file can be found at \href{http://cs.nyu.edu/~ajr619/model.net}{http://cs.nyu.edu/~ajr619/model.net}
+  The model file can be found at \href{http://cs.nyu.edu/\textasciitilde ajr619/model.net}{http://cs.nyu.edu/\textasciitilde ajr619/model.net}
 \subsubsection{Github repo}
   The repository for the changes and result.lua is at \\
   \href{https://github.com/rajegannathan/Deep-Learning/tree/master/hw1}{https://github.com/rajegannathan/Deep-Learning/tree/master/hw1}
 \subsubsection{Best performing model}
-  We got a best test set performance of 99.57\% for a slightly modified convolutional net wherein we rotate the image by angles produced by normal distribution with 0 mean and 0.2 deviation.  The randomly generated values are taken as the radians by which the image should be rotated.
+We got a best test set performance of 99.63\%.  We added Gaussian noise to all the images, followed by randomly rotating the image by an angle derived from a gaussian distribution of mean 0 and deviation 0.174 (corresponding to 10 degree rotation).  We also added a convolutional layer along with dropout.  Though we achieved best performance with this layer, we got almost similar performance of 99.62\% with just the image rotation.
 \subsubsection{Experiments}
   We ran a number of experiments starting with tweakign the options being passed to the test, train and model lua scripts.
 \begin{description}
+
   \item[SGD Batch size:] Changing the batch size of SGD decreases the performance drastically.  For batch size of 32, 64 and 128 the model's accuracy was in the range of 78\%, 60\% and  45\% respectively.
+
   \item[Momentum and Learning rate:] Theoretically, using a value of momentum greater than zero (and lesser than one) should help us jump over local minimum.  When combined with proper value of learning rate we should be able to find a non local minimum.  But from our experiments, we were unable to find a good combination of learning rate and momentum that gives a better performance than the default momentum of zero and learning rate of $10^{-3} $.  The performance drop was considerable and we were able to achieve accuracy in the range of around ~30\% only.
+
   \item[Optimization algorithm] Another theoritical point which we considered was to use SGD in the starting few epoches and then switch the optimization algorithm to something better such as BFGS.  Theoretically, SGD is supposed to help us skip saddle points and once we are near a minima, the other optimization algorithm could help us converge faster.  So we tried experimenting by changing the optimization algorithm after epochs 5, 7, 15 and 30.  We were able to get performance on par with the default SGD implementation (99.2\% accuracy) and we didn't observe any improvements in performance.
   
-  
-\item[Data Augmentation]  To generate more training examples we rotated the training data of random angle. The chosen criteria to rotate the image is a normal distribution with zero mean and $\theta$ standard deviation. During the training we rotated al the images randomly using this normal distribution. We run experiment with different values of \theta$, noticing that the performance improve for values smaller than  $20$ degree. In particular we found our best performance for $\theta=0.2$, that is around $11.46$ degree.
+\item[Data Augmentation]  To generate more training examples we rotated the training data of random angle. The chosen criteria to rotate the image is a normal distribution with zero mean and $\theta$ standard deviation. During the training we rotated al the images randomly using this normal distribution. We run experiment with different values of $\theta$, noticing that the performance improve for values smaller than  $20$ degree. In particular we found our best performance for $\theta=0.174$, that is around $11.46$ degree.
 
 \item[Introduction of noise] In order to reduce overfitting we introduced a random gaussian noise in the training images. Doing so, we obtained an overall worse performance during the training phase and a comparable performance during the testing phase, reducing in such way the gap of the performance between training and testing .
 
 \item[Additional Convolutional layer] We added an additional spatial convolutional layer, but we didn't notice any considerable improvement.
 
-\item[Drop out] Added a drop out layer    
+\item[Drop out] Added a drop out layer along with the additional convolutional layer.
 
+\item[Other experiments]
     We also tried with other optimization routines such as ASGD and CG.  But the script was giving a number of exceptions and we didn't explore it further due to time constraints.
+
 \end{description}
 \subsubsection{Figures}
 \begin{figure}[ht!]
   \centering
+  \includegraphics[width=0.65\textwidth]{topperformance}
+  \caption{Best performance figures. We used a network architecture that adds noise to the image, rotates the images by random angles drawn from a normal distribution with zero mean and 0.174 standard deviation and also has a convolution and dropout layers..\label{fig:top_performance}}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
   \includegraphics[width=0.65\textwidth]{bestPerformance}
-  \caption{Best performance figures. We added a layer that rotates the images by random angles drawn from a normal distribution with zero mean and 0.2 standard deviation. \label{fig:best_performance}}
+  \caption{Second best performance figures. We added a layer that rotates the images by random angles drawn from a normal distribution with zero mean and 0.2 standard deviation. \label{fig:best_performance}}
 \end{figure}
 \begin{figure}[ht!]
   \centering
