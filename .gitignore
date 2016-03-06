@@ -70,3 +70,9 @@ hw1/results
 *.swo
 
 hw1/doall.o*
+
+stl-10
+*.t7
+nohup.out
+logs
+*.dat
