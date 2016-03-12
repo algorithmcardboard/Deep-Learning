@@ -12,9 +12,9 @@ function parseDataLabel(d, numSamples, numChannels, height, width)
    for i = 1, #d do
       local this_d = d[i]
       for j = 1, #this_d do
-    t[idx]:copy(this_d[j])
-    l[idx] = i
-    idx = idx + 1
+        t[idx]:copy(this_d[j])
+        l[idx] = i
+        idx = idx + 1
       end
    end
    assert(idx == numSamples+1)
