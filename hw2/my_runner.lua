@@ -14,18 +14,19 @@ local numChannels = 3
 local width = 96
 local height = 96
 
-local numPatches = 2
-local kSize = 3 
+local numPatches = 2000
+local kSize = 13 
 local windowLength = numChannels*kSize*kSize
-local windowFactor = 1
+local windowFactor = 2
 
 print("==> load dataset")
-local trainData = {
-   data = torch.Tensor(numSamples, numChannels * width * height),
-   size = function() return numSamples end
-}
+local trainData = {}
 
-trainData.data = torch.load('/home/ubuntu/extra.t7').data
+trainData = torch.load('/home/ubuntu/mc3784/DeepLearning/Assignment2/extra10000.t7'):float()
+--trainData.data = torch.load('/home/ubuntu/ajr619/kmeans-learning-torch/two_sample.t7'):float()
+
+numSamples = trainData:size(1)
+-- print(numSamples)
 
 --print(trainData.data:size())
 
@@ -37,7 +38,7 @@ for curSample = 1,numPatches do
     local sNo = math.fmod(curSample-1,numSamples)+1
     for i=r,r+kSize-1  do
       for j = c,c+kSize-1 do
-        local patch = trainData.data[{sNo,{},{i,i+kSize-1},{j,j+kSize-1}}]
+        local patch = trainData[{sNo,{},{i,i+kSize-1},{j,j+kSize-1}}]
         local ptr = ((curSample - 1) * kSize * kSize) + ((i - r)*kSize) + (j-c) + 1
         --print("ptr is "..ptr .. " " .. curSample .. " " .. kSize .. " " .. i .. " " .. j)
         patches[{ptr,{}}] = patch:reshape(windowLength)
@@ -48,11 +49,13 @@ end
 --print ("size of patches is ")
 --print(patches:size())
 
-local ncentroids = 4
-local batchsize = math.min(torch.ceil(1000/(kSize*kSize)), patches:size(1))
-kernels, counts = unsup.kmeans_convoluve(patches, ncentroids, nil, kSize, 0.1, 1, batchsize, nil, true)
+local ncentroids = 512
+local batchsize = kSize * kSize * math.min(torch.ceil(1000/(kSize*kSize)), patches:size(1))
+print("batchsize is " .. batchsize)
+kernels, counts = unsup.kmeans_convoluve(patches, ncentroids, nil, kSize, 0.1, 10, batchsize, nil, true)
 
 print(kernels:size())
 print(counts:size())
 
---torch.save('patches.t7', patches)
+torch.save('kernels.t7', kernels)
+torch.save('counts.t7', counts)

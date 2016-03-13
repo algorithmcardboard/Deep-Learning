@@ -20,8 +20,6 @@ function unsup.kmeans_convoluve(x, k, centroids, kSize, std, niter, batchsize, c
 
    --print("batchSize is " .. batchsize .. " kSize is " .. kSize)
 
-   local numPatches = batchsize/(kSize*kSize)
-
    -- dims
    local nsamples = (#x)[1]
    local ndims = (#x)[2]
@@ -41,6 +39,7 @@ function unsup.kmeans_convoluve(x, k, centroids, kSize, std, niter, batchsize, c
    for i = 1,niter do
       -- progress
       if verbose then xlua.progress(i,niter) end
+      print("Starting iteration "..i)
 
       -- sums of squares
       local c2 = sum(pow(centroids,2),2)*0.5
@@ -52,6 +51,7 @@ function unsup.kmeans_convoluve(x, k, centroids, kSize, std, niter, batchsize, c
 
       -- process batch
       for i = 1,nsamples,batchsize do
+         if verbose then xlua.progress(i,nsamples) end
          -- indices
          local lasti = math.min(i+batchsize-1,nsamples)
          local m = lasti - i + 1
@@ -65,29 +65,45 @@ function unsup.kmeans_convoluve(x, k, centroids, kSize, std, niter, batchsize, c
          end
 
          --print(tmp:size())
-         --print(nCentroids .. " " .. numPatches .. " " .. kSize)
+         local numImages = m/(kSize*kSize)
+         --print(i .. " " .. lasti.. " " .. m .. " " .. numImages .. " " .. nsamples .. " ")
 
-         local tmpR = tmp:reshape(nCentroids, numPatches, kSize * kSize)
+         local tmpR = tmp:reshape(nCentroids, numImages, kSize * kSize)
          local max_vals, max_indices = tmpR:max(3)
 
-         max_vals = max_vals:reshape(nCentroids, numPatches)
-         max_indices = max_indices:reshape(nCentroids, numPatches)
-         local indices = torch.linspace(0, (numPatches-1)*kSize*kSize, numPatches):float():reshape(1, numPatches):expandAs(max_indices)
+         max_vals = max_vals:reshape(nCentroids, numImages)
+         max_indices = max_indices:reshape(nCentroids, numImages)
+         local indices = torch.linspace(0, (numImages-1)*kSize*kSize, numImages):float():reshape(1, numImages):expandAs(max_indices)
          max_indices = indices + max_indices:float()
 
          local val, labels = max_vals:max(1)
 
          local ii = torch.eq(max_vals, val:expandAs(max_vals))
 
-         local patchesToSelect = max_indices[ii]
-         local selectedPatches = batch:index(1, max_indices[ii]:sort():long())
+         local patchesToSelect = torch.diag(max_indices:index(1, labels:reshape(labels:size(2)))):sort():long()
+         local selectedPatches = batch:index(1, patchesToSelect)
+         if selectedPatches:size(1) > numImages  then
+           torch.save('batch.t7', batch)
+           torch.save('centroids.t7', centroids)
+         end
 
          --local val,labels = max(tmp,1)
          --print("calculating x2 " .. i .. " " .. lasti)
-         --print(selectedPatches:size())
          local x2 = sum(pow(selectedPatches,2),2)
 
-         --print(x2)
+         if(selectedPatches:size(1) > numImages) then
+           print(tmp:size())
+           print(tmpR:size())
+           print(max_vals:size())
+           print(val:size())
+           print(selectedPatches:size())
+           print(x2:size())
+           print(val:size())
+           print("ii sum is ", ii:sum())
+           print(ii)
+           print(val)
+           print(labels)
+         end
 
          loss = loss + sum(x2*0.5 - val:t())
 
