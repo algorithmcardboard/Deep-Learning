@@ -2,6 +2,7 @@ require("xlua")
 require("image")
 require("unsup")
 require("convolutional_kmeans")
+require("cunn")
 
 torch.manualSeed(1)
 torch.setdefaulttensortype('torch.FloatTensor')
@@ -14,7 +15,7 @@ local numChannels = 3
 local width = 96
 local height = 96
 
-local numPatches = 2000
+local numPatches = 10000
 local kSize = 13 
 local windowLength = numChannels*kSize*kSize
 local windowFactor = 2
@@ -52,7 +53,7 @@ end
 local ncentroids = 512
 local batchsize = kSize * kSize * math.min(torch.ceil(1000/(kSize*kSize)), patches:size(1))
 print("batchsize is " .. batchsize)
-kernels, counts = unsup.kmeans_convoluve(patches, ncentroids, nil, kSize, 0.1, 10, batchsize, nil, true)
+kernels, counts = unsup.kmeans_convoluve(patches, ncentroids, nil, kSize, 0.1, 20, batchsize, nil, true)
 
 print(kernels:size())
 print(counts:size())

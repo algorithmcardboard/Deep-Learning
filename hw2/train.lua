@@ -82,6 +82,46 @@ optimState = {
   learningRateDecay = opt.learningRateDecay,
 }
 
+previousAccuracies = {[1]=0.0, [2]=0.0, [3]=0.0, [4]=0.0, [5]=0.0}
+
+function swapElements(array, index)
+  --print("Swapping till "..index)
+  for idx=1, index-1, 1 do
+    array[idx] = array[idx+1]
+  end
+end
+
+-- prevAccuracy is an increasingly sorted list of top five accuracy of the models
+function shouldSave(curAccu, prevAccu)
+  if(curAccu < prevAccu[1]) then
+    --print("first return")
+    return false
+  end
+
+  local retVal = false
+  local found = 5
+  local todel = 0
+
+  for idx=1,5,1 do
+    if curAccu < prevAccu[idx] then
+      found = idx - 1
+      --print("break")
+      break
+    end
+  end
+
+  --print("found is " .. found)
+
+  if found >= 1 and prevAccu[found] ~= curAccu then 
+    todel = prevAccu[1]
+    swapElements(prevAccu, found)
+    prevAccu[found] = curAccu
+    retVal = true
+    --print("true break")
+  end
+
+  return retVal, todel
+end
 
 function train()
   model:training()
@@ -181,10 +221,13 @@ function val()
   end
 
   -- save model every 50 epochs
-  if epoch % 5 == 0 then
-    local filename = paths.concat(opt.save, 'model.net')
+  save_model, model_to_remove = shouldSave(confusion.totalValid, previousAccuracies)
+  if save_model then
+    local filename = paths.concat(opt.save, 'model.net' .. confusion.totalValid)
     print('==> saving model to '..filename)
     torch.save(filename, model:get(3))
+    local fileToRemove = paths.concat(opt.save, 'model.net' .. model_to_remove)
+    os.remove(fileToRemove)
   end
 
   confusion:zero()
@@ -194,6 +237,7 @@ end
 for i=1,opt.max_epoch do
   train()
   val()
+  if(i % 10 == 0) then
+    collectgarbage()
+  end
 end
-
-
