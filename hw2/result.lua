@@ -4,8 +4,10 @@ require 'cunn'
 require 'optim'
 
 torch.setdefaulttensortype('torch.FloatTensor')
-model_path = "logs/kmeans/model.net0.726"
+model_path = "logs/kmeans/model.net0.735"
 local c = require 'trepl.colorize'
+f = io.open('predictions.csv', 'w')
+f:write("Id,Prediction" .. "\n")
 
 do
   local CentroidFeatures,parent = torch.class('nn.CentroidFeatures', 'nn.SpatialConvolution')
@@ -101,12 +103,17 @@ raw_test = torch.load('stl-10/test.t7b')
 
 testData = {
    data = torch.Tensor(),
+   labels = torch.Tensor(),
    size = function() return 8000 end
 }
 
-testData.data = parseData(raw_test.data, 8000, 3, 96, 96)
+testData.data, testData.labels = parseData(raw_test.data, 8000, 3, 96, 96)
 
 testData.data = testData.data:float()
+testData.labels = testData.labels:float()
+
+print("Test data labels")
+print(testData.labels:size())
 
 print '<trainer> preprocessing data (color space + normalization)'
 collectgarbage()
@@ -118,8 +125,22 @@ model:evaluate()
 
 print(c.blue '==>'.." valing")
 local bs = 25
+error_count = 0
 for i=1,testData.data:size(1),bs do
   local outputs = model:forward(testData.data:narrow(1,i,bs):cuda())
-  print(outputs)
-  print('next iteration')
+  local max_vals, predictions = torch.max(outputs, 2)
+
+  for j=1,bs do
+    local cIndex = (i-1)+j
+    if(predictions[j][1] ~= testData.labels[cIndex]) then
+      error_count = error_count + 1
+    end
+
+    print(tostring(cIndex).. "," .. tostring(predictions[j][1]))
+    f:write(tostring(cIndex).. "," .. tostring(predictions[j][1]) .. '\n')
+  end
 end
+
+f.close()
+
+print("Accuracy is " .. 1-(error_count/8000))
