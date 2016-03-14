@@ -195,5 +195,3 @@ for i=1,opt.max_epoch do
   train()
   val()
 end
-
-

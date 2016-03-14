@@ -1,4 +1,5 @@
 require("unsup")
+require("cunn")
 
 function unsup.kmeans_convoluve(x, k, centroids, kSize, std, niter, batchsize, callback, verbose)
 
@@ -57,7 +58,7 @@ function unsup.kmeans_convoluve(x, k, centroids, kSize, std, niter, batchsize, c
          local m = lasti - i + 1
 
          -- k-means step, on minibatch
-         local batch = x[{ {i,lasti},{} }]
+         local batch = x[{ {i,lasti},{} }]:cuda()
          local batch_t = batch:t()
          local tmp = centroids * batch_t
          for n = 1,(#batch)[1] do
