@@ -14,11 +14,25 @@
 \fi}
 \global\let\hyper@last\relax 
 \gdef\HyperFirstAtBeginDocument#1{#1}
-\providecommand\HyField@AuxAddToFields[1]{}
-\providecommand\HyField@AuxAddToCoFields[2]{}
+\providecommand*\HyPL@Entry[1]{}
+\HyPL@Entry{0<</S/D>>}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Expression for energy}{2}{section.1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Backpropagation through a DAG of modules}{2}{subsection.1.1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Batch Normalization}{2}{subsection.1.2}}
 \@writefile{toc}{\contentsline {paragraph}{1:}{2}{section*.1}}
 \newlabel{backprop}{{1}{2}{1:}{equation.1.1}{}}
+\citation{code}
 \@writefile{toc}{\contentsline {paragraph}{2:}{3}{section*.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Visualization}{3}{section.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}t-SNE}{3}{section.3}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Kaggle}{3}{section.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Experiments}{3}{subsection.4.1}}
+\bibcite{model}{1}
+\bibcite{code}{2}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Visualization of the first layer of the best performing model. The first layer is built by doing convolutional clustering on the unlabelled data.}}{5}{figure.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Sample distored image. We distorted the image by using image.scale, image.crop and image.translate and image.rotate. The values are drawn from a random distribution with zero mean.}}{6}{figure.2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces tSNE for 1000 random images. The clustering is not directly visible in this particular run. We were unable to run the method again as we were getting segmentation errors in our AWS system. We were unable to fix the error even after restarting the system, or restarting manifold packages.}}{7}{figure.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Epoch vs train/validation accuracy for the best performing model. The best validation accuracy is 73.5\%}}{8}{figure.4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Epoch vs train/validation accuracy for the default vgg model with data augumentation consisting of image flipping/rotation. The best validation accuracy is 71.4\%}}{9}{figure.5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Epoch vs train/validation accuracy. This model scales and rotates the image to a larger degree than the previous model and thus the performance is highly unpredictable.}}{10}{figure.6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Peroformance of model ran with \~3 patch per image for a subset of 10,000 unlabelled images.}}{11}{figure.7}}
