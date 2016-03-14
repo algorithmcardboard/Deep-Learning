@@ -1,110 +1,125 @@
-require 'torch'   -- torch
-require 'image'   -- for color transforms
-require 'nn'      -- provides a normalization operator
-require 'optim'   -- an optimization package, for online and batch methods
+require 'torch'
+require 'image'
+require 'cunn'
+require 'optim'
 
-model_path = "results/model.net.102"
+torch.setdefaulttensortype('torch.FloatTensor')
+model_path = "logs/kmeans/model.net0.726"
+local c = require 'trepl.colorize'
 
-model = torch.load(model_path)
+do
+  local CentroidFeatures,parent = torch.class('nn.CentroidFeatures', 'nn.SpatialConvolution')
 
-tar = 'http://torch7.s3-website-us-east-1.amazonaws.com/data/mnist.t7.tgz'
-data_path = 'mnist.t7'
-train_file = paths.concat(data_path, 'train_32x32.t7')
-test_file = paths.concat(data_path, 'test_32x32.t7')
-
-if not paths.filep(train_file) or not paths.filep(test_file) then
-   os.execute('wget ' .. tar)
-   os.execute('tar xvf ' .. paths.basename(tar))
-end
-
-trsize = 6000
-tesize = 1000
-
-trsize = 60000
-tesize = 10000
-
-loaded = torch.load(train_file, 'ascii')
-trainData = {
-   data = loaded.data,
-   labels = loaded.labels,
-   size = function() return trsize end
-}
-
-loaded = torch.load(test_file, 'ascii')
-testData = {
-   data = loaded.data,
-   labels = loaded.labels,
-   size = function() return tesize end
-}
-
-trainData.data = trainData.data:float()
-testData.data = testData.data:float()
-
-print '==> preprocessing data: normalize globally'
-mean = trainData.data[{ {},1,{},{} }]:mean()
-std = trainData.data[{ {},1,{},{} }]:std()
-
--- trainData.data[{ {},1,{},{} }]:add(-mean)
--- trainData.data[{ {},1,{},{} }]:div(std)
-
--- Normalize test data, using the training means/stds
-testData.data[{ {},1,{},{} }]:add(-mean)
-testData.data[{ {},1,{},{} }]:div(std)
-
-trainMean = trainData.data[{ {},1 }]:mean()
-trainStd = trainData.data[{ {},1 }]:std()
-
-testMean = testData.data[{ {},1 }]:mean()
-testStd = testData.data[{ {},1 }]:std()
-
-cmd = torch.CmdLine()
-cmd:option('-type', 'double', 'type: double | float | cuda')
-cmd:option('-save', 'results', 'subdirectory to save/log experiments in')
-cmd:text()
-
-opt = cmd:parse(arg or {})
-
-classes = {'1','2','3','4','5','6','7','8','9','0'}
-confusion = optim.ConfusionMatrix(classes)
-
-error_count = 0
-
-f = io.open('predictions.csv', 'w')
-f:write("Id,Prediction" .. "\n")
-
--- dofile '5_test.lua'
-for t = 1,testData:size() do
-  -- disp progress
-  xlua.progress(t, testData:size())
-
-  -- get new sample
-  local input = testData.data[t]
-  input = input:double()
-
-  local target = testData.labels[t]
-
-  -- test sample
-  local pred = model:forward(input)
-  _prediction = torch.FloatTensor()
-  _max = torch.FloatTensor()
-  _pred_idx = torch.LongTensor()
-  _targ_idx = torch.LongTensor()
-
-  _prediction:resize(pred:size()):copy(pred)
-
-  _max:max(_pred_idx, _prediction, 1)
-
-  observed_class = _pred_idx[1]
-
-  if (observed_class ~= target) then
-    error_count = error_count + 1
+  function CentroidFeatures:__init(nInputPlane, nOutputPlane, kW, kH, dW, dH, padW, padH)
+    parent.__init(self,nInputPlane, nOutputPlane, kW, kH, dW, dH, padW, padH)
+    self.train = true
+    --self.weight:copy(centroids)
   end
 
-  confusion:add(pred, target)
-  print ("Observed " .. observed_class .. " Target " .. target)
-  f:write(tostring(t).. "," .. tostring(observed_class) .. '\n')
+  function CentroidFeatures:updateOutput(input)
+    self.output:set(input)
+    return self.output
+  end
+
+  function CentroidFeatures:updateGradInput(input, gradOutput)
+    return self.gradInput
+  end
+
+  function CentroidFeatures:accGradParameters(input, gradOutput, scale)
+  end
 end
 
-f.close()
+function parseData(d, numSamples, numChannels, height, width)
+   local t = torch.ByteTensor(numSamples, numChannels, height, width)
+   local l = torch.ByteTensor(numSamples)
+   local idx = 1
+   for i = 1, #d do
+      local this_d = d[i]
+      for j = 1, #this_d do
+        t[idx]:copy(this_d[j])
+        l[idx] = i
+        idx = idx + 1
+      end
+   end
+   assert(idx == numSamples+1)
+   return t, l
+end
 
-print("total accuraccy is " .. ( 1 - error_count/testData:size()))
+--
+--function parseData(d, numSamples, numChannels, height, width)
+ -- local t = torch.ByteTensor(numSamples, numChannels, height, width)
+  --local idx = 1
+  --for i = 1, #d do
+   -- t[idx]:copy(d[idx])
+    --idx = idx + 1
+    --if idx % 1000 == 0 then
+     -- print("processed "..idx)
+    --end
+  --end
+  --assert(idx == numSamples+1)
+  --return t
+--end
+
+function normalize(unsupData)
+  local normalization = nn.SpatialContrastiveNormalization(1, image.gaussian1D(7))
+  for i = 1,unsupData:size() do
+     xlua.progress(i, unsupData:size())
+     -- rgb -> yuv
+     local rgb = unsupData.data[i]
+     local yuv = image.rgb2yuv(rgb)
+     -- normalize y locally:
+     yuv[1] = normalization(yuv[{{1}}])
+     unsupData.data[i] = yuv
+  end
+  -- normalize u globally:
+  local mean_u = unsupData.data:select(2,2):mean()
+  local std_u = unsupData.data:select(2,2):std()
+  unsupData.data:select(2,2):add(-mean_u)
+  unsupData.data:select(2,2):div(std_u)
+  -- normalize v globally:
+  local mean_v = unsupData.data:select(2,3):mean()
+  local std_v = unsupData.data:select(2,3):std()
+  unsupData.data:select(2,3):add(-mean_v)
+  unsupData.data:select(2,3):div(std_v)
+  unsupData.mean_u = mean_u
+  unsupData.std_u = std_u
+  unsupData.mean_v = mean_v
+  unsupData.std_v = std_v
+  return unsupData
+end
+
+tar = 'https://inclass.kaggle.com/c/assignment-2-stl-10/download/test.t7b'
+data_path = 'stl-10'
+test_file = paths.concat(data_path, 'test.t7b')
+print("test file is "..test_file)
+
+if not paths.filep(test_file) then
+   os.execute('wget ' .. tar)
+end
+
+raw_test = torch.load('stl-10/test.t7b')
+
+testData = {
+   data = torch.Tensor(),
+   size = function() return 8000 end
+}
+
+testData.data = parseData(raw_test.data, 8000, 3, 96, 96)
+
+testData.data = testData.data:float()
+
+print '<trainer> preprocessing data (color space + normalization)'
+collectgarbage()
+
+testData = normalize(testData)
+
+model = torch.load(model_path)
+model:evaluate()
+
+print(c.blue '==>'.." valing")
+local bs = 25
+for i=1,testData.data:size(1),bs do
+  local outputs = model:forward(testData.data:narrow(1,i,bs):cuda())
+  print(outputs)
+  print('next iteration')
+end
