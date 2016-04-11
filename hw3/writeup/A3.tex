@@ -73,4 +73,6 @@ Pooling is used for a number of reasons.
   \item Stationary property.  Generally images have stationary property.  This means that features that are useful in one region will be useful in other regions also.  Pooling operation helps in aggregating the features at various locations.
 \end{enumerate}
 
+We generally use Max-pooling for images as the performance of Max pooling has been emperically shown to be better than Average or Lp pooling for image workflows.  This can be explained by the stationary property of the image as the most important activation in a small patch can be found by using max pooling.
+
 \end{document}
