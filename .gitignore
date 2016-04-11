@@ -76,3 +76,8 @@ stl-10
 nohup.out
 logs
 *.dat
+
+*.aux
+*.dvi
+*.out
+*.ps

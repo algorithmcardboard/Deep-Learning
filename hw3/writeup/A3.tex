@@ -1,0 +1,76 @@
+\documentclass{article}
+
+\usepackage[final]{nips_2016}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{amsmath}
+
+\title{Formatting instructions for NIPS 2016}
+
+\author{Anirudhan J.~Rajagopalan \\
+  Department of Computer Science\\
+  New York University\\
+  New York, NY.\\
+  \texttt{ajr619@nyu.edu} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Variants of Pooling}
+Pooling is an operation in Convolutional Neural Networks which is performed after a convolutional layer.  
+We decide on a size of the region to do pool our convolutional filters over.
+Then we divide the convolved features into disjoint regions and take the max, mean or norm of the feature activations depending on the type of pooling operation.
+Generally the stride length used in pooling is equal to the pooling window size.
+\subsection{Three types of pooling}
+There are three types of pooling operations that are used
+\begin{description}
+  \item[Max pooling] Max pooling takes the maximum of the feature activations.  Implemented by \mbox{SpatialMaxPooling}.
+  \item[Average pooling] Average pooling takes the average of the feature activations. Implemented by \mbox{SpatialAveragePooling}.
+  \item[Lp pooling] LpPooling takes the l2 norm of the feature activations. Implemented by \mbox{SpatialLPPooling}.
+\end{description}
+
+\subsection{Mathematical formulas for pooling}
+Suppose we have a $N x N$ convolutional layer (filters) and a pooling layer of size $m x m$ where $ m < N $
+The pooling operation is generally implemented using a stride of m.
+Therefore the size of filters after pooling will be $\frac{N}{m} * \frac{N}{m} $ and each of the $m x m$ pooling operations gives a single value.
+The single value for a pooling operation can be represented by
+\begin{align*}
+  y = \sigma(x_{ij})
+\end{align*}
+where $1 \le i \le m $ and $1 \le j \le m $.
+\subsubsection{MaxPooling}
+Incase of max pooling
+\begin{align*}
+  \sigma = \max(x_{ij}) \qquad 1 \le i \le m and 1 \le j \le m
+\end{align*}
+
+\subsubsection{Average Pooling}
+Incase of average pooling
+\begin{align*}
+  \sigma = \frac{\sum_{i=1}^{m} \sum_{j=1}^{m} x_{ij}}{m*m}
+\end{align*}
+
+\subsubsection{LPPooling}
+Incase of LP pooling where $p \ge 2$.
+\begin{align*}
+  \sigma = {(\sum_{i=1}^{m}\sum_{j=1}^{m} x_{ij}^{p} )}^{\frac{1}{p}}
+\end{align*}
+
+\subsection{Reason for using in deep learning}
+Pooling is used for a number of reasons.
+\begin{enumerate}
+  \item Computational tractability.  The number of features after convolution increases by $numFIlters x (N-m+1) x (N-m+1)$.  Generally it will be computationally intractable to perform learning on this huge data.
+  \item Overfitting.  Since the number of features are high, this will lead to overfitting.  Pooling helps in reducing the number of features.
+  \item Stationary property.  Generally images have stationary property.  This means that features that are useful in one region will be useful in other regions also.  Pooling operation helps in aggregating the features at various locations.
+\end{enumerate}
+
+\end{document}
