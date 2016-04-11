@@ -81,3 +81,6 @@ logs
 *.dvi
 *.out
 *.ps
+
+*.bbl
+*.blg
