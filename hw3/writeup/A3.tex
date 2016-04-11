@@ -75,4 +75,36 @@ Pooling is used for a number of reasons.
 
 We generally use Max-pooling for images as the performance of Max pooling has been emperically shown to be better than Average or Lp pooling for image workflows.  This can be explained by the stationary property of the image as the most important activation in a small patch can be found by using max pooling.
 
+\section{Convolution}
+\subsection{Number of values after forward propogation}
+When we apply a convolution on a $N \times N$ image with a kerenel of size $ m \times m $ we get $(N-m+1) \times (N-m+1)$ output values after the convolution.
+
+Here, N = 5, m = 3.
+Therefore we will get $(5-3+1) \times (5-3+1) = 9$ values.
+\subsection{Values after forward propogation}
+The resulting filter obtained by applying the convolutional kernel is:
+\begin{centering}
+  \begin{align*}
+  109 &\qquad 92 \qquad 72 \\
+  108 &\qquad 85 \qquad 74 \\
+  110 &\qquad 74 \qquad 79
+  \end{align*}
+\end{centering}
+
+\subsection{Value of gradient}
+
+\section{Optimization}
+\subsection{Mathematical formula for reconstruction loss}
+\subsection{Gradient of the loss with respect to the loss}
+\subsection{Gradient descent step}
+\subsection{Gradient step with momentum}
+
+\section{Top-k error}
+\subsection{Definition}
+\subsection{Why use top-1 and top-5 error}
+
+\section{t-SNE}
+\subsection{Crowding problem}
+\subsection{Derive $\frac{\partial C}{\partial y_{i}}$}
+
 \end{document}
