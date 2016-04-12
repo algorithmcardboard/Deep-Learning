@@ -25,6 +25,40 @@
 
 \maketitle
 
+\section{General Questions}
+\subsection{Distilling a network into one module}
+A linear activation function can be defined as 
+\begin{align*}
+  a^{{i}} = w^{(i)}x + b^{i}
+\end{align*}
+
+A linear combination of such layers can be expressed as a sum of all the individual activations.  For example, given two activation layers
+\begin{align*}
+  y =& w^{(2)}x_{out} + b^{(2)}\\
+  =& w^{(2)}w^{(1)}x_{in} + w^{(2)}b^{(1)} + b^{(2)}
+\end{align*}
+Generalizing this, we can write
+\begin{align*}
+  y =& Wx_{in} + b \\
+  W =& \prod_{i = 1}^{l} w_{i} \\
+  b =& \sum_{i = 1}^{l} (\prod_{l}^{i+1} w_{i})b_{i} + b_{n}
+\end{align*}
+
+\subsection{Dictionary used in Sparse coding vs Autoencoders}
+An autoencoder is a model which tries to reconstruct the input using some sort of constraint.  Without any constraints an autoencoder can learn just the identity function which will will always provide the least reconstruction loss.  Thus a dictionary learnt by an autoencoder need not be sparse.  Additionally there are different type of encoding techniques, like denoising autoencoders which can be used to remove noise from an input.
+Sparse coding is a encoding method which can forces the model to find a sparse and overcomplete representation of the input.  Thus a dictionary learnt with denoisign autoencoder will always be sparse (there will be lot of features with zeros).
+
+
+\section{Softmax regression gradient calculation}
+\subsection{Derive $\frac{\partial l}{\partial W_{i,j}}$}
+\subsection{Loss functions and gradients}
+\subsubsection{When $y_{c1} = 1, \hat{y_{c2}} = 1, c_{1} \ne c_{2}$}
+\subsubsection{Why there is no need to worry about this situation}
+
+\section{Chain rule}
+\subsection{Calculating gradients using chain rule}
+\subsection{Gradients at $x = 1, y = 0$}
+
 \section{Variants of Pooling}
 Pooling is an operation in Convolutional Neural Networks which is performed after a convolutional layer.  
 We decide on a size of the region to do pool our convolutional filters over.
@@ -126,6 +160,8 @@ Using top-1 error ensures how close the object identified in the image by an alg
 \section{t-SNE}
 \subsection{Crowding problem}
 \subsection{Derive $\frac{\partial C}{\partial y_{i}}$}
+
+\section{Proximal gradient descent}
 
 \bibliographystyle{plain}
 \bibliography{references}
