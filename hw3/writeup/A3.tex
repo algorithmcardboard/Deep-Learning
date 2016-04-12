@@ -41,7 +41,7 @@ Generalizing this, we can write
 \begin{align*}
   y =& Wx_{in} + b \\
   W =& \prod_{i = 1}^{l} w_{i} \\
-  b =& \sum_{i = 1}^{l} (\prod_{l}^{i+1} w_{i})b_{i} + b_{n}
+  b =& \sum_{i = 1}^{l} (\prod_{l}^{i} w_{i})b_{i-1} + b_{n}
 \end{align*}
 
 \subsection{Dictionary used in Sparse coding vs Autoencoders}
@@ -52,13 +52,95 @@ Thus a dictionary learnt with denoising autoencoder will always be sparse (there
 
 \section{Softmax regression gradient calculation}
 \subsection{Derive $\frac{\partial l}{\partial W_{i,j}}$}
+Given:
+\begin{align*}
+  \hat{y} =& \sigma{(Wx+b)} \\
+  \sigma{(a)}_{i} =& \frac{\exp(a_{i})}{\sum_{j} \exp(a_{i})} \\
+  l(y, \hat{y}) =& -\sum_{i} y_{i} \log \hat{y}_{i}
+\end{align*}
+
+By using chain rule,
+\begin{align*}
+  \frac{\partial l}{\partial W_{ij}} = \frac{\partial l}{\partial \sigma{(a)}{k}}\frac{\partial\sigma{(a)}_{k}}{\partial W_{ij}}
+\end{align*}
+also,
+\begin{align*}
+  \frac{\partial l}{\partial \sigma{(a)}_{k}} =&  -\frac{yk}{\sigma{(a)}_{k}} \\
+  \frac{\partial a_{l}}{\partial W_{ij}} =&  \delta_{il}x_{j} \\
+  \implies \frac{\partial \sigma{(a)}_{k}}{\partial W_{ij}} =& \frac{\partial \sigma{(a)}_{k}}{\partial {(a)}_{l}} \frac{\partial {(a)}_{l}}{\partial W_{ij}} \\
+  =& \frac{\partial \sigma{(a)}_{k}}{\partial {(a)}_{l}} \delta_{il}x_{j} \\
+  =& \frac{\partial \sigma{(a)}_{k}}{\partial {(a)}_{i}} x_{j}
+\end{align*}
+Using chain rule:
+\begin{align*}
+  \frac{\partial l}{\partial W_{ij}} =& -\frac{yk}{\sigma{(a)}_{k}} \frac{\partial \sigma{(a)}_{k}}{\partial {(a)}_{i}} x_{j} 
+\end{align*}
+By using the equation obtained in assignment (2).
+\begin{align*}
+  \frac{\partial \sigma{(a)}_{k}}{\partial {(a)}_{i}} =& \sigma{(a)}_{k} (\delta_{ik} - \sigma{(a)}_{i})
+\end{align*}
+By substituting $y_{i} = \sigma{(a)}_{i}$
+\begin{align*}
+  \frac{\partial l}{\partial W_{ij}} =& -\frac{yk}{\sigma{(a)}_{k}} \sigma{(a)}_{k} (\delta_{ik} - \sigma{(a)}_{i}) \\
+  =& -yk (\delta_{ik} - \sigma{(a)}_{i})x_{j} \\
+  =& (\hat{y}_{i} - y_{i})x_{j}
+\end{align*}
+
 \subsection{Loss functions and gradients}
 \subsubsection{When $y_{c1} = 1, \hat{y_{c2}} = 1, c_{1} \ne c_{2}$}
+When $y_{c1} = 1$, 
+\begin{align*}
+  l =& -\log(\hat{y}_{c1}) \\
+  \frac{\partial l}{\partial W_{ij}} =& -(\delta_{ic1} - \hat{y}_{i})x_{j}
+\end{align*}
+When $\hat{y_{c2}} = 1, c_{1} \ne c_{2}$, 
+\begin{align*}
+  \frac{\partial l}{\partial W_{c1j}} =& -x_{j} \\
+  \frac{\partial l}{\partial W_{c2j}} =& x_{j} \\
+\end{align*}
+
 \subsubsection{Why there is no need to worry about this situation}
+Since the weights of the hidden layers are initialized randomly, the possibility of $\hat{y}_{c2} = 1 $ is negligible.  When the weights changes during learning, it moves away from this point.  Hencec we need not worry about this situation.
 
 \section{Chain rule}
 \subsection{Calculating gradients using chain rule}
+Given
+\begin{align*}
+  f(x,y) = \frac{x^{2} + \sigma{(y)}}{3x + y - \sigma{(x)}}
+\end{align*}
+This can be considered as a equation in $x, y, \sigma{(x)}, \sigma{(x)}$
+\begin{align*}
+  f(x,y)=& E(x,y,\sigma(x),\sigma(y)) \\
+\end{align*}
+The gradient calculated using the chain rule is:
+\begin{align*}
+  \frac{\partial f}{\partial x}=& \frac{\partial E}{\partial x}+  \frac{\partial E}{\partial \sigma (x)}  \frac{\partial  \sigma (x)}{\partial x}\\
+  \frac{\partial f}{\partial y}=& \frac{\partial E}{\partial y}+  \frac{\partial E}{\partial \sigma (y)}  \frac{\partial  \sigma (y)}{\partial y}
+\end{align*}
+Where:
+\begin{align*}
+  \frac{\partial E}{\partial x}=& \frac{2x(3x+y-\sigma{(x)})-(x^2+\sigma{(y)})3}{{(3x+y-\sigma{(x)})}^2}\\
+  \frac{\partial E}{\partial y}=& -\frac{x^2+\sigma(y)}{{(3x+y-\sigma(x))}^2}\\
+  \frac{\partial E}{\partial \sigma (x)}=& \frac{x^2+\sigma (y)}{{(3x+y-\sigma(x))}^2}\\
+  \frac{\partial E}{\partial \sigma (y)} =& \frac{1}{(3x+y-\sigma(x))}\\
+  \frac{\partial  \sigma(x)}{\partial x}=&\frac{e^{-x}}{{(1+e^{-x})}^2}\\
+  \frac{\partial  \sigma(y)}{\partial y}=&\frac{e^{-y}}{{(1+e^{-y})}^2}
+\end{align*}
+
 \subsection{Gradients at $x = 1, y = 0$}
+\begin{align*}
+  \frac{\partial E}{\partial x}(x=1,y=0)=& 0.007\\
+  \frac{\partial E}{\partial y}(x=1,y=0)=&-0.29\\
+  \frac{\partial E}{\partial \sigma (x)}=& 0.29\\
+  \frac{\partial E}{\partial \sigma (y)} =& 0.44\\
+  \frac{\partial  \sigma (x)}{\partial x}=&0.19\\
+  \frac{\partial  \sigma (y)}{\partial y}=&0.25
+\end{align*}
+Substituting the gradients:
+\begin{align*}
+  \frac{\partial f}{\partial x}=& 0.064\\
+  \frac{\partial f}{\partial y}=& -0.18 
+\end{align*}
 
 \section{Variants of Pooling}
 Pooling is an operation in Convolutional Neural Networks which is performed after a convolutional layer.  
@@ -117,7 +199,9 @@ When we apply a convolution on a $N \times N$ image with a kerenel of size $ m \
 Here, N = 5, m = 3.
 Therefore we will get $(5-3+1) \times (5-3+1) = 9$ values.
 \subsection{Values after forward propogation}
+The values of filters were hand calculated and verified by the code in~\cite{website:convolution_code}.
 The resulting filter obtained by applying the convolutional kernel is:
+
 \begin{centering}
   \begin{align*}
   109 &\qquad 92 \qquad 72 \\
@@ -127,6 +211,7 @@ The resulting filter obtained by applying the convolutional kernel is:
 \end{centering}
 
 \subsection{Value of gradient}
+The values of gradient were hand calculated and verified by the code in~\cite{website:convolution_code}
 \begin{center}
 \begin{tabular}{c c c c c }
    4 &   7  &  10  &   6  &   3 \\
@@ -146,9 +231,41 @@ An autoencoder is a model which tries to reconstruct the input.  This reconstruc
 \end{align*}
 
 Here, $\sigma_{2} $ denotes the decoding function and $ \sigma $ denotes the encoding function.
+
+When the input are real valued, we can use cross entropy loss.
+\begin{align*}
+  L(X, Z) = -\sum_{k = 1}^{d} [X_{k}\log{Z_{k}} + (1-X_{k}) \log{(1 - Z_{k})} ]
+\end{align*}
+
 \subsection{Gradient of the loss with respect to the loss}
+\begin{align*}
+ A_1 = &Wx\\
+ A_2 = &W^*(\sigma_1{A_1}) \\
+\frac{\partial l}{\partial W} = & \frac{\partial l}{\partial \sigma_2}
+\frac{\partial \sigma_2}{\partial A_2}
+\frac{\partial A_2}{\partial \sigma_1}
+\frac{\partial \sigma_1}{\partial A_1}\frac{\partial A_1}{\partial W}
+\\
+\frac{\partial l}{\partial W^*} = & \frac{\partial l}{\partial \sigma_2}
+\frac{\partial \sigma_2}{\partial A_2}
+\frac{\partial A_2}{\partial W^*} \\
+\frac{\partial l}{\partial W} = & -2(x-\sigma_2(A_2))\frac{\partial \sigma_2}{\partial A_2}W^*\frac{\partial \sigma_1}{\partial A_1}x
+\\
+\frac{\partial l}{\partial W^*} = &-2(x-\sigma_2(A_2))\frac{\partial \sigma_2}{\partial A_2}(\sigma{A_1})
+\end{align*}
 \subsection{Gradient descent step}
+The gradient descent is eta $\eta $ multiplied by the gradient of loss with respect to the parameters
+\begin{align*}
+ w*^{t} =& w*^{t-1} - \eta \frac{\partial l}{\partial W*^{t-1}}  \\
+ w^{t} =& w^{t-1} - \eta \frac{\partial l}{\partial W^{t-1}}
+\end{align*}
 \subsection{Gradient step with momentum}
+Momentum is used to help the network out of local minimas. By adding the momentum term, the udpate step is now
+\begin{align*}
+ w*^{t} =& w*^{t-1} - \eta \frac{\partial l}{\partial W*^{t-1}} - m \times \eta \frac{\partial l^{t-1}}{\partial W*^{t-2}} \\
+ w^{t} =& w^{t-1} - \eta \frac{\partial l}{\partial W^{t-1}} - m \times \eta \frac{\partial l^{t-1}}{\partial W^{t-2}} \\
+\end{align*}
+for a fixed eta.
 
 \section{Top-k error}
 \subsection{Definition}
@@ -167,9 +284,135 @@ Using top-1 error ensures how close the object identified in the image by an alg
 
 \section{t-SNE}
 \subsection{Crowding problem}
+The volume of a sphere centered on datapoint i scales as r and m, where r is the radius and m the dimensionality of the sphere.  If the data is uniformly distributed around i in the high dimensional manifold, and when we try to project them into two dimensional manifold, the area in the lower dimensional manifold available to map distant data points will not be large enough compared to the area available to map nearby datapoints.  This leads to a large number of data points collecting to the center of the map.  This is called as crowding problem.
+
+In t-SNE we solve this problem by using gaussian distribution for high dimensional data and student-t distribution for the two dimensional data.~\cite{van2008visualizing}
+
 \subsection{Derive $\frac{\partial C}{\partial y_{i}}$}
+\begin{align}
+\label{C}
+C=\sum_i\sum_j p_{ij}\log \frac{p_{ij}}{q_{ij}}= \sum_i\sum_j (p_{ij}\log p_{ij}-p_{ij}\log q_{ij})
+\end{align}
+
+Lets define $d_{ij}=|| y_i -y_j ||$, then the expression of $q_{ij}$ is:
+\begin{equation}\label{q}
+q_{ij} =\frac{e^{-d_{ij}^2}}{\sum_{k\neq l} e^{-d_{kl}^2}}
+\end{equation}
+
+the dependency of $C$ from $y_i$ is going to be only through $d_{ij}^2$ and $d_{ji}^2$:
+ $$
+ \frac{\partial C}{\partial y_i}= \sum_j( \frac{\partial C}{\partial d_{ij}^2}\frac{\partial{d_{ij}^2}}{\partial y_i}+ \frac{\partial C}{\partial d_{ji}^2}\frac{\partial{d_{ji}^2}}{\partial y_i})
+ $$
+Because of the symmetry for exchange of $y_i$ and $y_j$ of $d_{ij}^2$:
+ \begin{equation}
+ \frac{\partial C}{\partial y_i}= 4\sum_j \frac{\partial C}{\partial d_{ij}^2}(y_i-y_j)
+ \end{equation}\label{Cgrad}
+ Let:
+ \begin{equation}\label{Z}
+ Z=(\sum_{k\neq l} e^{-d_{kl}^2})
+ \end{equation}
+ And than from (\ref{q}):
+ \begin{equation}\label{Zq}
+ q_{ij} =\frac{e^{-d_{ij}^2}}{Z}\,\Rightarrow \,  q_{ij}Z=e^{-d_{ij}^2}
+ \end{equation}
+ The first part of (\ref{C}) is a constant with respect to $d_{ij}$ so:
+ $$
+ \frac{\partial C}{\partial d_{ij}^2}=-\sum_{k\neq l} p_{kl}\frac{\partial(\log q_{kl})}{\partial d_{ij}^2}=
+ -\sum_{k\neq l} p_{kl}\frac{\partial(\log q_{kl}Z - \log Z)}{\partial d_{ij}^2}
+ $$
+ where we have multiply and divided $p_{kl}$  for $Z$ and split the logarithm. Using the (\ref{Zq}):
+ \begin{equation}\label{partialC2}
+  \frac{\partial C}{\partial d_{ij}^2}=-\sum_{k\neq l} p_{kl}[(\frac{1}{q_{kl}Z})\frac{\partial e^{-d_{kl}^2}}{\partial d_{ij}^2} -\frac{1}{Z}\frac{\partial Z}{\partial d_{ij}^2}]
+ \end{equation}
+ Calculating the two derivative in this equation:
+  \begin{eqnarray*}
+ \frac{\partial e^{-d_{kl}^2}}{\partial d_{ij}^2} & = & -e^{-d_{ij}^2} \delta_{ik}\delta_{jl}\\
+ \frac{\partial Z}{\partial d_{ij}^2}& = & -e^{-d_{ij}^2} 
+  \end{eqnarray*}
+where we used the Kronecker delta   $\delta_{ik}$ that is $1$ for $i=k$ and $0$ otherwise. Than substituting in (\ref{partialC2}) the only terms of the sum that remains is the one with $i=k$ and $j=l$:
+$$
+  \frac{\partial C}{\partial d_{ij}^2} = p_{ij}(\frac{1}{q_{ij}Z}) e^{-d_{ij}^2} -
+  \sum_{k \neq l} p_{kl}\frac{1}{Z}e^{-d_{ij}^2}=(p_{ij}- q_{ij})$$
+where we used the (\ref{Zq}) and the fact that   $\sum_{k \neq l} p_{kl}=1$. Substituting in (\ref{Cgrad}):
+$$
+ \frac{\partial C}{\partial y_i}= 4\sum_j (p_{ij}- q_{ij})(y_i-y_j)
+$$
+
 
 \section{Proximal gradient descent}
+\subsection{A}
+$$
+\frac{\partial }{\partial z}(\frac{1}{2}||z-x||^2_2+t||z||_1)=z_i-|x|+\mathrm{ sign}(||z||_1)t=0
+$$
+ Solving for z:
+ $$
+ z=|x|-\mathrm{ sign}(||z||_1)t
+ $$
+We have three possible values depending on the value of $z$ being positive, negative or null:
+ \begin{eqnarray*}
+ z&=&|x| -t \,\,\, \mathrm{for } \,\,x>t\\
+ z&=&|x| +t\,\,\, \mathrm{for } \,\,x<-t\\
+ z&=&0\,\,\, \mathrm{for } \,\,|x|<t\\
+  \end{eqnarray*}
+ That is the soft-thresholding function:
+ $$
+ S_t(x)={(|x|-t)}_+\odot \mathrm{sign}(x)  
+ $$
+And then for a vector:
+ \begin{equation}\label{soft}
+ S_t(\mathbf{x})={(|\mathbf{x}|-t)}_+\odot \mathrm{sign}(\mathbf{x})  
+ \end{equation}
+
+\subsection{B}
+By substituting $\nabla g(x_k) = -X^T(y-Xx_k)$ in:
+$$
+x_{k+1}=\mathrm{prox}_{h,\alpha_k}(x_k-\alpha_k\nabla g(x_k)) = S_{\alpha_k}(x_k-\alpha_k\nabla g(x_k))
+$$
+$$
+x_{k+1} = S_{\alpha_k}{(x_{k} - \alpha_{k}X^T(Xx_{k}-y))}
+$$
+This is exactly the update rule used for ISTA, as in~\cite{mairal2014sparse} with a few variable changes.
+
+\subsection{C}
+$$
+u=\mathrm{prox}_{h,t}\Rightarrow \partial_u[\frac{1}{2}||u-x||^2_2+th(u)] \,\in \,0
+$$
+$$
+u-x+t\partial h(u)\,\in \,0
+$$
+:
+$$
+\implies \frac{x-u}{t}\,\in \,\partial h(u)
+$$
+\subsection{D}
+From $G_{\alpha_k}(x_k)$ we know that, 
+$$
+\mathrm{prox}_{h,t}(x_k-\alpha_k\nabla g(x_k)) =x_k-\alpha_k G_{\alpha_k}(x_k) =x_{k+1}
+$$
+and 
+$$
+\mathrm{prox}_{h,t}(x_k-\alpha_k\nabla g(x_k)) =\mathrm{argmin}_{x_{k+1}}(\frac{1}{2}||x_{k+1}-x_k+\alpha_k \nabla g(x_k)||^2_2+th(x_{k+1})) 
+$$
+$$
+\implies \partial(\frac{1}{2}||x_{k+1}-x_k+\alpha_k \nabla g(x_k)||^2_2+th(x_{k+1})) =0
+$$
+By solving the above equations,
+\begin{equation}\label{kplus1}
+x_{k+1}=x_k-\alpha_k\nabla g(x_k) -t \partial h(x_{k+1})
+\end{equation}
+Evaluating
+$$
+G_{\alpha_k}(x_k)-\nabla g(x_k) = \frac{x_k}{\alpha_k}-\frac{1}{\alpha_k}\mathrm{prox}_{h,t}(x_k-\alpha_k\nabla g(x_k)) -\nabla g(x_k) 
+$$
+using (\ref{kplus1}):
+$$
+G_{\alpha_k}(x_k)-\nabla g(x_k)  \in  \frac{x_k}{\alpha_k} -\frac{1}{\alpha_k}(x_k-\alpha_k\nabla g(x_k) -t \partial h(x_{k+1}))
+-\nabla g(x_k)
+$$
+we get:
+$$
+G_{\alpha_k}(x_k)-\nabla g(x_k)  \in  \partial h(x_{k+1})
+$$
 
 \bibliographystyle{plain}
 \bibliography{references}
