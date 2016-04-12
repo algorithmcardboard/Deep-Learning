@@ -311,7 +311,7 @@ Because of the symmetry for exchange of $y_i$ and $y_j$ of $d_{ij}^2$:
  \begin{equation}\label{Z}
  Z=(\sum_{k\neq l} e^{-d_{kl}^2})
  \end{equation}
- And than from (\ref{q}):
+ And then from (\ref{q}):
  \begin{equation}\label{Zq}
  q_{ij} =\frac{e^{-d_{ij}^2}}{Z}\,\Rightarrow \,  q_{ij}Z=e^{-d_{ij}^2}
  \end{equation}
@@ -320,16 +320,16 @@ Because of the symmetry for exchange of $y_i$ and $y_j$ of $d_{ij}^2$:
  \frac{\partial C}{\partial d_{ij}^2}=-\sum_{k\neq l} p_{kl}\frac{\partial(\log q_{kl})}{\partial d_{ij}^2}=
  -\sum_{k\neq l} p_{kl}\frac{\partial(\log q_{kl}Z - \log Z)}{\partial d_{ij}^2}
  $$
- where we have multiply and divided $p_{kl}$  for $Z$ and split the logarithm. Using the (\ref{Zq}):
+ after multiplying and dividing $p_{kl}$  for $Z$ and split the logarithm. Using (\ref{Zq}):
  \begin{equation}\label{partialC2}
   \frac{\partial C}{\partial d_{ij}^2}=-\sum_{k\neq l} p_{kl}[(\frac{1}{q_{kl}Z})\frac{\partial e^{-d_{kl}^2}}{\partial d_{ij}^2} -\frac{1}{Z}\frac{\partial Z}{\partial d_{ij}^2}]
  \end{equation}
- Calculating the two derivative in this equation:
+ Calculating derivatives in this equation:
   \begin{eqnarray*}
  \frac{\partial e^{-d_{kl}^2}}{\partial d_{ij}^2} & = & -e^{-d_{ij}^2} \delta_{ik}\delta_{jl}\\
  \frac{\partial Z}{\partial d_{ij}^2}& = & -e^{-d_{ij}^2} 
   \end{eqnarray*}
-where we used the Kronecker delta   $\delta_{ik}$ that is $1$ for $i=k$ and $0$ otherwise. Than substituting in (\ref{partialC2}) the only terms of the sum that remains is the one with $i=k$ and $j=l$:
+where we used the Kronecker delta   $\delta_{ik}$ that is $1$ for $i=k$ and $0$ otherwise. Then substituting in (\ref{partialC2}). The only terms of the sum that remains is the one with $i=k$ and $j=l$:
 $$
   \frac{\partial C}{\partial d_{ij}^2} = p_{ij}(\frac{1}{q_{ij}Z}) e^{-d_{ij}^2} -
   \sum_{k \neq l} p_{kl}\frac{1}{Z}e^{-d_{ij}^2}=(p_{ij}- q_{ij})$$
