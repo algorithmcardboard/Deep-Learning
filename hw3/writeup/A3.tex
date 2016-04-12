@@ -46,7 +46,8 @@ Generalizing this, we can write
 
 \subsection{Dictionary used in Sparse coding vs Autoencoders}
 An autoencoder is a model which tries to reconstruct the input using some sort of constraint.  Without any constraints an autoencoder can learn just the identity function which will will always provide the least reconstruction loss.  Thus a dictionary learnt by an autoencoder need not be sparse.  Additionally there are different type of encoding techniques, like denoising autoencoders which can be used to remove noise from an input.
-Sparse coding is a encoding method which can forces the model to find a sparse and overcomplete representation of the input.  Thus a dictionary learnt with denoisign autoencoder will always be sparse (there will be lot of features with zeros).
+Sparse coding is a encoding method which can forces the model to find a sparse and overcomplete representation of the input.  
+Thus a dictionary learnt with denoising autoencoder will always be sparse (there will be lot of features with zeros).
 
 
 \section{Softmax regression gradient calculation}
@@ -138,6 +139,13 @@ The resulting filter obtained by applying the convolutional kernel is:
 
 \section{Optimization}
 \subsection{Mathematical formula for reconstruction loss}
+An autoencoder is a model which tries to reconstruct the input.  This reconstruction loss for real valued input is generally given by 
+\begin{align*}
+  L =& \frac{1}{2} \sum_{k}{\lvert\lvert \hat{x}_{k} - x_{k} \rvert\rvert}^{2} \\
+  \hat{x}_{k} =& \sigma_{2}(W'\sigma_{1}(WX + b) + b')
+\end{align*}
+
+Here, $\sigma_{2} $ denotes the decoding function and $ \sigma $ denotes the encoding function.
 \subsection{Gradient of the loss with respect to the loss}
 \subsection{Gradient descent step}
 \subsection{Gradient step with momentum}
