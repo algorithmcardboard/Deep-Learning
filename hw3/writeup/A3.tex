@@ -35,7 +35,7 @@ There are three types of pooling operations that are used
 \begin{description}
   \item[Max pooling] Max pooling takes the maximum of the feature activations.  Implemented by \mbox{SpatialMaxPooling}.
   \item[Average pooling] Average pooling takes the average of the feature activations. Implemented by \mbox{SpatialAveragePooling}.
-  \item[Lp pooling] LpPooling takes the l2 norm of the feature activations. Implemented by \mbox{SpatialLPPooling}.
+  \item[Lp pooling] LpPooling takes the lp norm of the feature activations. Implemented by \mbox{SpatialLPPooling}.
 \end{description}
 
 \subsection{Mathematical formulas for pooling}
@@ -92,6 +92,15 @@ The resulting filter obtained by applying the convolutional kernel is:
 \end{centering}
 
 \subsection{Value of gradient}
+\begin{centering}
+\begin{align*}
+4 & \qquad 7 & \qquad 10 &\qquad 6 & \qquad 3\\
+9 & \qquad 17 &\qquad  25 & \qquad  16 & \qquad   8\\
+11 & \qquad 23 & \qquad  34 & \qquad  23 & \qquad  11\\
+7 & \qquad 16 & \qquad  24 & \qquad  17 & \qquad   8\\
+2 & \qquad 6 & \qquad 9 & \qquad   7 & \qquad   3
+\end{align*}
+\end{centering}
 
 \section{Optimization}
 \subsection{Mathematical formula for reconstruction loss}
