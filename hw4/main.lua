@@ -6,7 +6,7 @@
 ----  LICENSE file in the root directory of this source tree. 
 ----
 
-previousAccuracies = {[1]=0.0, [2]=0.0, [3]=0.0, [4]=0.0, [5]=0.0}
+previousAccuracies = {[1]=math.huge, [2]=math.huge, [3]=math.huge, [4]=math.huge, [5]=math.huge}
 
 gpu = false
 if gpu then
