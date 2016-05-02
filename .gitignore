@@ -73,6 +73,7 @@ hw1/doall.o*
 
 stl-10
 *.t7
+*.t7b*
 nohup.out
 logs
 *.dat
