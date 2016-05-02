@@ -254,7 +254,7 @@ end
 
 -- prevAccuracy is an increasingly sorted list of top five accuracy of the models
 function shouldSave(curAccu, prevAccu)
-  if(curAccu < prevAccu[1]) then
+  if(curAccu > prevAccu[1]) then
     --print("first return")
     return false
   end
@@ -264,7 +264,7 @@ function shouldSave(curAccu, prevAccu)
   local todel = 0
 
   for idx=1,5,1 do
-    if curAccu < prevAccu[idx] then
+    if curAccu > prevAccu[idx] then
       found = idx - 1
       --print("break")
       break
