@@ -120,6 +120,7 @@ function query_sentences()
     else
       next_words = get_next_words(line)
       
+      table.remove(line, 1)
       line = stringx.join(" ", line)
       next_words = stringx.join(" ", next_words)
       print(line .." ".. next_words)
