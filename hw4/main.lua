@@ -20,12 +20,14 @@ end
 
 require('nngraph')
 require('base')
+require('optim')
 ptb = require('data')
+filename_prefix = 'seq_40'
 
 -- Trains 1 epoch and gives validation set ~182 perplexity (CPU).
 local params = {
                 batch_size=20, -- minibatch
-                seq_length=20, -- unroll length
+                seq_length=40, -- unroll length
                 layers=2,
                 decay=2,
                 rnn_size=200, -- hidden unit size
@@ -72,6 +74,28 @@ local function lstm(x, prev_c, prev_h)
     local next_h           = nn.CMulTable()({out_gate, nn.Tanh()(next_c)})
 
     return next_c, next_h
+end
+
+function grucell(input, prevh)
+    local i2h = nn.Linear(params.rnn_size, 3 * params.rnn_size)(input)
+    local h2h = nn.Linear(params.rnn_size, 3 * params.rnn_size)(prevh)
+    local gates = nn.CAddTable()({
+       nn.Narrow(2, 1, 2 * params.rnn_size)(i2h),
+       nn.Narrow(2, 1, 2 * params.rnn_size)(h2h),
+    })
+    gates = nn.SplitTable(2)(nn.Reshape(2, params.rnn_size)(gates))
+    local resetgate = nn.Sigmoid()(nn.SelectTable(1)(gates))
+    local updategate = nn.Sigmoid()(nn.SelectTable(2)(gates))
+    local output = nn.Tanh()(nn.CAddTable()({
+       nn.Narrow(2, 2 * params.rnn_size+1, params.rnn_size)(i2h),
+       nn.CMulTable()({resetgate,
+       nn.Narrow(2, 2 * params.rnn_size+1, params.rnn_size)(h2h),})
+    }))
+    local nexth = nn.CAddTable()({ prevh,
+       nn.CMulTable()({ updategate,
+       nn.CSubTable()({output, prevh,}),}),
+    })
+    return nexth
 end
 
 function create_network()
@@ -218,10 +242,10 @@ function run_valid()
 
     save_model, model_to_remove = shouldSave(perplexityToSave, previousAccuracies)
     if save_model then
-      local filename = paths.concat('logs', 'model.net' .. perplexityToSave)
+      local filename = paths.concat('/scratch/ajr619/lstm/', filename_prefix .. '.model.net' .. perplexityToSave)
       print('==> saving model to '..filename)
       torch.save(filename, model)
-      local fileToRemove = paths.concat('logs', 'model.net' .. model_to_remove)
+      local fileToRemove = paths.concat('logs', filename_prefix .. 'model.net' .. model_to_remove)
       os.remove(fileToRemove)
     end
 end
@@ -293,8 +317,16 @@ state_train = {data=transfer_data(ptb.traindataset(params.batch_size))}
 state_valid =  {data=transfer_data(ptb.validdataset(params.batch_size))}
 state_test =  {data=transfer_data(ptb.testdataset(params.batch_size))}
 
+torch.save('state_test', state_test)
+torch.save('state_train', state_train)
+torch.save('state_valid', state_valid)
+
+print(ptb.vocab_map)
+
 print("Network parameters:")
 print(params)
+
+logger = optim.Logger('logs/'..filename_prefix..'_train.log')
 
 local states = {state_train, state_valid, state_test}
 for _, state in pairs(states) do
@@ -332,12 +364,20 @@ while epoch < params.max_max_epoch do
     if step % torch.round(epoch_size / 10) == 10 then
         wps = torch.floor(total_cases / torch.toc(start_time))
         since_beginning = g_d(torch.toc(beginning_time) / 60)
-        print('epoch = ' .. g_f3(epoch) ..
+        print( 'step = '.. g_f3(step) .. ', epoch = ' .. g_f3(epoch) ..
              ', train perp. = ' .. g_f3(torch.exp(perps:mean())) ..
              ', wps = ' .. wps ..
              ', dw:norm() = ' .. g_f3(model.norm_dw) ..
              ', lr = ' ..  g_f3(params.lr) ..
              ', since beginning = ' .. since_beginning .. ' mins.')
+        logger:add{['step'] = train_error,
+                  ['epoch'] = test_error,
+                  ['train perp'] = g_f3(torch.exp(perps:mean())),
+                  ['wps'] = wps,
+                  ['dwnorm'] = g_f3(model.norm_dw),
+                  ['lr'] = g_f3(params.lr),
+                  ['numMins'] = since_beginning
+                  }
     end
     
     -- run when epoch done
