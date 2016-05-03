@@ -27,11 +27,11 @@ filename_prefix = 'seq_40'
 -- Trains 1 epoch and gives validation set ~182 perplexity (CPU).
 local params = {
                 batch_size=20, -- minibatch
-                seq_length=40, -- unroll length
+                seq_length=20, -- unroll length
                 layers=2,
                 decay=2,
-                rnn_size=200, -- hidden unit size
-                dropout=0, 
+                rnn_size=600, -- hidden unit size
+                dropout=0.4, 
                 init_weight=0.1, -- random weight initialization limits
                 lr=1, --learning rate
                 vocab_size=10000, -- limit on the vocabulary size

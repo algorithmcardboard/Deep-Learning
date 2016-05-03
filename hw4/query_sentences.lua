@@ -94,7 +94,7 @@ function get_next_words(line)
 
     -- swap
     x = y
-    y = torch.Tensor(1):fill(ptb.vocab_map[next_word])
+    y = torch.Tensor(1):fill(ptb.vocab_map[word])
 
     g_replace_table(model.s[0], model.s[1])
   end
