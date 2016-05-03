@@ -317,10 +317,6 @@ state_train = {data=transfer_data(ptb.traindataset(params.batch_size))}
 state_valid =  {data=transfer_data(ptb.validdataset(params.batch_size))}
 state_test =  {data=transfer_data(ptb.testdataset(params.batch_size))}
 
-torch.save('state_test', state_test)
-torch.save('state_train', state_train)
-torch.save('state_valid', state_valid)
-
 print(ptb.vocab_map)
 
 print("Network parameters:")
