@@ -2,7 +2,8 @@ require 'nngraph'
 require('base')
 ptb = require('data')
 
-MODEL_FILE = '/scratch/ajr619/lstm/model.net120.10116158295'
+-- MODEL_FILE = '/scratch/ajr619/lstm/model.net120.10116158295'
+MODEL_FILE = 'logs/lang_model.net'
 
 print('Loading model file '.. MODEL_FILE)
 model = torch.load(MODEL_FILE)

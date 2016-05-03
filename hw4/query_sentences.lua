@@ -120,19 +120,22 @@ function query_sentences()
 end
 
 params = {
-  rnn_size = 200,
+  rnn_size = 600,
   layers = 2,
   gru = false,
-  seq_length = 20
+  seq_length = 20,
+  vocab_size = 10000
 }
 
-print ("Loading model "..MODEL_FILE)
 
-MODEL_FILE = "/scratch/ajr619/lstm/model.net120.10116158295"
+MODEL_FILE = "logs/lang_model.net"
+
+print ("Loading model "..MODEL_FILE)
 model = get_model()
 
 print("Building vocab and initialize states")
 vocab_map, inverse_map = get_vocab_inverse_map()
+-- print(inverse_map)
 
 -- Querying sentences
 query_sentences()
